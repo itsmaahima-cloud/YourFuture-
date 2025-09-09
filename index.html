@@ -579,7 +579,27 @@
           },
           particles: {
             move: {
-              speed: 0.4
+              speed: 0.2,
+              direction: "none",
+              outModes: "out",
+            },
+            size: {
+              value: { min: 0.3, max: 2 },
+            },
+            opacity: {
+              value: { min: 0.3, max: 0.8 },
+              animation: {
+                enable: true,
+                speed: 0.5,
+                sync: false
+              }
+            },
+            links: {
+              enable: true,
+              distance: 150,
+              color: "#ffffff",
+              opacity: 0.1,
+              width: 1
             }
           }
         },
