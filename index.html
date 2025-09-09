@@ -61,7 +61,7 @@
       z-index: 0;
     }
     a{color:inherit;text-decoration:none}
-    .container{max-width:var(--maxw);margin:0 auto;padding:28px; position: relative; z-index: 1;}
+    .container{max-width:var(--maxw);margin:0 auto;padding:28px;position: relative;z-index: 1;}
     header{backdrop-filter: blur(6px);background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:12px;margin-bottom:20px}
     .nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .brand{display:flex;align-items:center;gap:12px}
@@ -173,7 +173,7 @@
       border: none;
       cursor: pointer;
       padding: 0;
-      z-index: 1001; /* Above the mobile nav panel */
+      z-index: 1001;
     }
     .hamburger-line {
       display: block;
@@ -202,17 +202,17 @@
       .logo{width:46px;height:46px}
 
       .nav ul {
-        display: none; /* Hide desktop nav links */
+        display: none;
       }
 
       .hamburger {
-        display: block; /* Show hamburger */
+        display: block;
       }
 
       #main-nav {
         position: fixed;
         top: 0;
-        left: -100%; /* Start off-screen */
+        left: -100%;
         width: 100%;
         height: 100vh;
         background: var(--bg);
@@ -489,11 +489,37 @@
       window.addEventListener('load', () => {
         const preloader = document.getElementById('preloader');
         if (preloader) {
-          setTimeout(() => { // Ensure animations have time to be seen
+          setTimeout(() => {
             preloader.classList.add('is-loaded');
           }, 200);
         }
       });
+
+      // scroll animations
+      const revealElements = document.querySelectorAll('.reveal-on-scroll');
+      if (revealElements.length > 0) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+      }
+
+      // Responsive menu toggle
+      const menuToggle = document.getElementById('menu-toggle');
+      const mainNav = document.getElementById('main-nav');
+      if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', () => {
+          mainNav.classList.toggle('is-open');
+          menuToggle.classList.toggle('is-open');
+          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+          menuToggle.setAttribute('aria-expanded', !isExpanded);
+        });
+      }
 
       // form behaviour
       const form = document.getElementById('bookingForm');
@@ -525,38 +551,8 @@
         }catch(err){ console.error(err); formMsg.textContent = 'Network error — please try again later.'; }
       });
 
-      // scroll animations
-      const revealElements = document.querySelectorAll('.reveal-on-scroll');
-      const revealObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1 });
-      revealElements.forEach(el => revealObserver.observe(el));
-
-      // Responsive menu toggle
-      const menuToggle = document.getElementById('menu-toggle');
-      const mainNav = document.getElementById('main-nav');
-      if (menuToggle && mainNav) {
-        menuToggle.addEventListener('click', () => {
-          mainNav.classList.toggle('is-open');
-          menuToggle.classList.toggle('is-open');
-          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-          menuToggle.setAttribute('aria-expanded', !isExpanded);
-        });
-      }
-
       // accessibility: close menus with Escape in future (placeholder)
-      document.addEventListener('keydown', function(e){
-        if(e.key === 'Escape' && mainNav.classList.contains('is-open')) {
-          mainNav.classList.remove('is-open');
-          menuToggle.classList.remove('is-open');
-          menuToggle.setAttribute('aria-expanded', 'false');
-        }
-      });
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ /* close menus if any */ } });
     })();
   </script>
 
